@@ -1,0 +1,85 @@
+<!doctype html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8">
+  <script src="https://cdn.jsdelivr.net/vue/2.0.3/vue.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/vue.router/2.0.1/vue-router.min.js"></script>
+</head>
+
+<div id="app">
+  <router-link to="/top">トップ</router-link>
+  <router-link to="/users">ユーザー一覧</router-link>
+  <router-link v-bind:to="{name: 'user', params: {userId: 893}}">ユーザー詳細</router-link>
+  <router-view></router-view>
+</div>
+<script type='text/javascript'>
+  // ユーザー詳細のコンポーネント定義
+  var User = {
+    template: '<div class="user">' +
+      '<h2>ユーザーIDは {{ $route.params.userId }} です。</h2>' +
+      '<router-link v-bind:to="\'/user/\' + $route.params.userId + \'/profile\'">ユーザーのプロフィールページを見る</router-link>' +
+      '<router-link v-bind:to="\'/user/\' + $route.params.userId + \'/posts\'">ユーザーの投稿ページを見る</router-link>' +
+      '<router-view></router-view>' +
+      '</div>'
+  }
+
+  // ユーザー詳細ページ内で部分的に表示されるユーザーのプロフィールページ
+  var UserProfile = {
+    template: '<div class="user-profile">' +
+      '<h3>こちらはユーザー {{ $route.params.userId }} のプロフィールページです。</h3>' +
+      '</div>'
+  }
+
+  // ユーザー詳細ページ内で部分的に表示されるユーザーの投稿ページ
+  var UserPosts = {
+    template: '<div class="user-posts">' +
+      '<h3>こちらはユーザー {{ $route.params.userId }} の投稿ページです。</h3>' +
+      '</div>'
+  }
+
+  // ルートオプションを渡してルーターインスタンスを生成します
+  var myrouter = new VueRouter({
+    // 各ルートにコンポーネントをマッピングします
+    // コンポーネントはVue.extend() によって作られたコンポーネントコンストラクタでも
+    // コンポーネントオプションのオブジェクトでも構いません
+    routes: [{
+        path: '/top',
+        component: {
+          template: '<div>Top page</div>'
+        }
+      },
+      {
+        path: '/users',
+        component: {
+          template: '<div>User list page</div>'
+        }
+      },
+      {
+        path: '/user/:userId',
+        name: 'user',
+        component: User,
+        children: [{
+            // /user/:userId/profile がマッチした時に
+            // UserProfileコンポーネントはUserコンポーネントの <router-view> 内部でレンダリングされます
+            path: 'profile',
+            component: UserProfile
+          },
+          {
+            // /user/:userId/posts がマッチした時に
+            // UserPostsコンポーネントはUserコンポーネントの <router-view> 内部でレンダリングされます
+            path: 'posts',
+            component: UserPosts
+          }
+        ]
+      }
+    ]
+  })
+
+
+  // ルーターのインスタンスをrootとなるVueインスタンスに渡します
+  var app = new Vue({
+    router: myrouter
+  }).$mount('#app')
+</script>

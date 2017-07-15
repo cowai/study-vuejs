@@ -1,0 +1,20 @@
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<div id="app-5">
+    <p>{{ message }}</p>
+    <button v-on:click="reversMessage">Reverse Message</button>
+</div>
+<!-- scopeを出ると効かなくなる -->
+<!--<button v-on:click="reversMessage">Reverse Message</button>-->
+<script type='text/javascript'>
+    var app5 = new Vue({
+        el: '#app-5',
+        data: {
+            message: 'Hello Vue.js!'
+        },
+        methods: {
+            reversMessage: function () {
+                this.message = this.message.split('').reverse().join('')
+            }
+        }
+    })
+</script>
